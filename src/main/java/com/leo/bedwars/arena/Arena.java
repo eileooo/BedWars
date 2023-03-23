@@ -25,5 +25,4 @@ public class Arena {
         return name;
     }
 
-
 }

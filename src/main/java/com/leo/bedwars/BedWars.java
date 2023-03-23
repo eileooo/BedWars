@@ -3,6 +3,8 @@ package com.leo.bedwars;
 import com.leo.bedwars.arena.*;
 import com.leo.bedwars.arena.generator.Generator;
 import com.leo.bedwars.arena.generator.GeneratorType;
+import com.leo.bedwars.arena.setup.SetupCommand;
+import com.leo.bedwars.arena.setup.SetupManager;
 import com.leo.bedwars.commands.TestCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -19,6 +21,7 @@ import java.util.Set;
 public final class BedWars extends JavaPlugin {
 
     ArenaManager arenaManager;
+    SetupManager setupManager;
     File arenaFile;
     YamlConfiguration arenaConfiguration = new YamlConfiguration();
 
@@ -26,9 +29,11 @@ public final class BedWars extends JavaPlugin {
     @Override
     public void onEnable() {
         this.arenaManager = new ArenaManager(this);
+        this.setupManager = new SetupManager();
         loadArenasConfig();
         loadArenas();
         getCommand("arenas").setExecutor(new TestCommand(arenaManager));
+        getCommand("arena").setExecutor(new SetupCommand(setupManager));
     }
 
     void loadArenas() {
@@ -65,7 +70,7 @@ public final class BedWars extends JavaPlugin {
             }
 
             for (String islandKey : islands) {
-                Team team = Team.valueOf(capitalize(islandKey.toLowerCase()));
+                Team team = Team.valueOf(islandKey.toUpperCase());
 
                 ConfigurationSection generatorSection = islandsSection.getConfigurationSection(islandKey + ".generator");
                 GenericLocation generator = new GenericLocation().fromConfigurationSection(generatorSection);
@@ -114,9 +119,4 @@ public final class BedWars extends JavaPlugin {
 
     }
 
-    public String capitalize(String str)
-    {
-        if(str == null || str.length()<=1) return str;
-        return str.substring(0, 1).toUpperCase() + str.substring(1);
-    }
 }

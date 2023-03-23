@@ -4,3 +4,4 @@ main: com.leo.bedwars.BedWars
 api-version: 1.19
 commands:
   arenas:
+  arena:
