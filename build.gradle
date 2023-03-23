@@ -36,6 +36,7 @@ java {
 tasks.withType(JavaCompile).configureEach {
     if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
         options.release = targetJavaVersion
+        options.encoding = 'UTF-8'
     }
 }
 
@@ -47,3 +48,5 @@ processResources {
         expand props
     }
 }
+
+compileJava.options.encoding = 'UTF-8'
