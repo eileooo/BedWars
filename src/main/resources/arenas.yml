@@ -1,0 +1,48 @@
+Rooftop:
+  map: rooftop_map
+  generators:
+  diamond:
+    1:
+      x: 1
+      y: 2
+      z: 5
+      yaw: 10
+      pitch: 209
+  emerald:
+  1:
+    x: 1
+    y: 2
+    z: 5
+    yaw: 10
+    pitch: 209
+  islands:
+    red:
+      generator:
+        x: 1
+        y: 2
+        z: 5
+        yaw: 10
+        pitch: 209
+      bed:
+        x: 1
+        y: 2
+        z: 5
+        yaw: 10
+        pitch: 209
+      shop:
+        x: 1
+        y: 2
+        z: 5
+        yaw: 10
+        pitch: 209
+      upgrades:
+        x: 1
+        y: 2
+        z: 5
+        yaw: 10
+        pitch: 209
+
+
+
+
+
