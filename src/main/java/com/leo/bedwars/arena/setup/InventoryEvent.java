@@ -44,28 +44,17 @@ public class InventoryEvent implements Listener {
             Location location = player.getLocation();
             GenericLocation genericLocation = new GenericLocation().fromBukkitLocation(location);
 
-
-
             if (item == arena.currentTeam.getWool()) {
                 Inventory teamInventory = Bukkit.createInventory(null, 36, "Selecionar time");
-
-                ItemStack blue = new ItemBuilder(Team.BLUE.getWool()).withDisplayName(Team.BLUE.getColoredTranslate()).withLore(arena.generateLoreForIsland(Team.BLUE)).build();
-                ItemStack red = new ItemBuilder(Team.RED.getWool()).withDisplayName(Team.RED.getColoredTranslate()).withLore(arena.generateLoreForIsland(Team.RED)).build();
-                ItemStack green = new ItemBuilder(Team.GREEN.getWool()).withDisplayName(Team.GREEN.getColoredTranslate()).withLore(arena.generateLoreForIsland(Team.GREEN)).build();
-                ItemStack yellow = new ItemBuilder(Team.YELLOW.getWool()).withDisplayName(Team.YELLOW.getColoredTranslate()).withLore(arena.generateLoreForIsland(Team.YELLOW)).build();
-                ItemStack purple = new ItemBuilder(Team.PURPLE.getWool()).withDisplayName(Team.PURPLE.getColoredTranslate()).withLore(arena.generateLoreForIsland(Team.PURPLE)).build();
-                ItemStack cyan = new ItemBuilder(Team.CYAN.getWool()).withDisplayName(Team.CYAN.getColoredTranslate()).withLore(arena.generateLoreForIsland(Team.CYAN)).build();
-                ItemStack pink = new ItemBuilder(Team.PINK.getWool()).withDisplayName(Team.PINK.getColoredTranslate()).withLore(arena.generateLoreForIsland(Team.PINK)).build();
-                ItemStack orange = new ItemBuilder(Team.ORANGE.getWool()).withDisplayName(Team.ORANGE.getColoredTranslate()).withLore(arena.generateLoreForIsland(Team.ORANGE)).build();
-
-                teamInventory.setItem(11, blue);
-                teamInventory.setItem(12, red);
-                teamInventory.setItem(14, green);
-                teamInventory.setItem(15, yellow);
-                teamInventory.setItem(20, purple);
-                teamInventory.setItem(21, cyan);
-                teamInventory.setItem(23, pink);
-                teamInventory.setItem(24, orange);
+                int i = 11;
+                for (Team teamValue : Team.values()) {
+                    ItemStack teamItem = new ItemBuilder(teamValue.getWool()).withDisplayName(teamValue.getColoredTranslate()).withLore(manager.generateLoreForIsland(arena, teamValue)).build();
+                    teamInventory.setItem(i, teamItem);
+                    i++;
+                    if (i == 16) {
+                        i = 21;
+                    }
+                }
 
                 player.openInventory(teamInventory);
             }
@@ -138,17 +127,17 @@ public class InventoryEvent implements Listener {
                 return Team.BLUE;
             case 12:
                 return Team.RED;
-            case 14:
+            case 13:
                 return Team.GREEN;
-            case 15:
+            case 14:
                 return Team.YELLOW;
-            case 20:
+            case 15:
                 return Team.PURPLE;
             case 21:
                 return Team.CYAN;
-            case 23:
+            case 22:
                 return Team.PINK;
-            case 24:
+            case 23:
                 return Team.ORANGE;
             default:
                 return null;

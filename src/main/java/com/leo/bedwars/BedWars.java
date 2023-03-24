@@ -49,6 +49,7 @@ public final class BedWars extends JavaPlugin {
             ConfigurationSection diamondGenerators = arenaConfiguration.getConfigurationSection(key + ".generators.diamond");
             ConfigurationSection emeraldGenerators = arenaConfiguration.getConfigurationSection(key + ".generators.emerald");
 
+            assert diamondGenerators != null;
             for (String diamondGenerator : diamondGenerators.getKeys(false)) {
                 GenericLocation location = new GenericLocation().fromConfigurationSection(diamondGenerators);
                 Generator generator = new Generator(GeneratorType.DIAMOND, location);
@@ -56,6 +57,7 @@ public final class BedWars extends JavaPlugin {
                 arena.addGenerator(generator);
             }
 
+            assert emeraldGenerators != null;
             for (String emeraldGenerator : emeraldGenerators.getKeys(false)) {
                 GenericLocation location = new GenericLocation().fromConfigurationSection(emeraldGenerators);
                 Generator generator = new Generator(GeneratorType.EMERALD, location);
@@ -64,6 +66,7 @@ public final class BedWars extends JavaPlugin {
             }
 
             ConfigurationSection islandsSection = arenaConfiguration.getConfigurationSection(key + ".islands");
+            assert islandsSection != null;
             Set<String> islands = islandsSection.getKeys(false);
 
             if (islands.size() < 8) {
@@ -75,15 +78,19 @@ public final class BedWars extends JavaPlugin {
                 Team team = Team.valueOf(islandKey.toUpperCase());
 
                 ConfigurationSection generatorSection = islandsSection.getConfigurationSection(islandKey + ".generator");
+                assert generatorSection != null;
                 GenericLocation generator = new GenericLocation().fromConfigurationSection(generatorSection);
 
                 ConfigurationSection bedSection = islandsSection.getConfigurationSection(islandKey + ".bed");
+                assert bedSection != null;
                 GenericLocation bed = new GenericLocation().fromConfigurationSection(bedSection);
 
                 ConfigurationSection shopSection = islandsSection.getConfigurationSection(islandKey + ".shop");
+                assert shopSection != null;
                 GenericLocation shop = new GenericLocation().fromConfigurationSection(shopSection);
 
                 ConfigurationSection upgradesSection = islandsSection.getConfigurationSection(islandKey + ".upgrades");
+                assert upgradesSection != null;
                 GenericLocation upgrades = new GenericLocation().fromConfigurationSection(upgradesSection);
 
                 Island island = new Island(team);

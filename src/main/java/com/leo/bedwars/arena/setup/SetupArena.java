@@ -1,5 +1,6 @@
 package com.leo.bedwars.arena.setup;
 
+import com.leo.bedwars.ItemBuilder;
 import com.leo.bedwars.arena.GenericLocation;
 import com.leo.bedwars.arena.Island;
 import com.leo.bedwars.arena.Team;
@@ -8,6 +9,9 @@ import com.leo.bedwars.arena.generator.GeneratorType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,7 +27,6 @@ public class SetupArena {
     HashMap<Team, Island> islands = new HashMap<>();
     ArrayList<Generator> generators = new ArrayList<>();
     Team currentTeam = Team.RED;
-
 
     public SetupArena(String name, String world) {
         this.name = name;
@@ -66,48 +69,19 @@ public class SetupArena {
         this.currentTeam = currentTeam;
     }
 
-
-    public List<String> generateLoreForIsland(Team team) {
-        Island island = islands.get(team);
-        ArrayList<String> lore = new ArrayList<>();
-
-        lore.add(" ");
-        lore.add((island.getBed() != null ? ChatColor.GREEN : ChatColor.RED) + "Cama");
-        lore.add((island.getGenerator() != null ? ChatColor.GREEN : ChatColor.RED) + "Gerador");
-        lore.add((island.getShop() != null ? ChatColor.GREEN : ChatColor.RED) + "Aldeão comerciante");
-        lore.add((island.getUpgrades() != null ? ChatColor.GREEN : ChatColor.RED) + "Aldeão de melhorias");
-        lore.add(" ");
-
-        return lore;
+    public HashMap<Team, Island> getIslands() {
+        return islands;
     }
 
-    public void save(YamlConfiguration configuration, File file) {
-        configuration.set(name + ".world", world);
-
-        List<Generator> diamond = generators.stream().filter(gen -> gen.getType() == GeneratorType.DIAMOND).toList();
-        List<Generator> emerald = generators.stream().filter(gen -> gen.getType() == GeneratorType.EMERALD).toList();
-
-        for (int i = 0; i < diamond.size(); i++) {
-            diamond.get(i).getLocation().save(name + ".generators.diamond." + i, configuration);
-        }
-
-        for (int i = 0; i < emerald.size(); i++) {
-            diamond.get(i).getLocation().save(name + ".generators.emerald." + i, configuration);
-        }
-
-        for (Island island : islands.values()) {
-            island.getGenerator().getLocation().save(name + ".islands." + island.getTeam().toString() + ".generator", configuration);
-            island.getBed().save(name + ".islands." + island.getTeam().toString() + ".bed", configuration);
-            island.getShop().save(name + ".islands." + island.getTeam().toString() + ".shop", configuration);
-            island.getUpgrades().save(name + ".islands." + island.getTeam().toString() + ".upgrades", configuration);
-        }
-
-        try {
-            configuration.save(file);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
+    public String getName() {
+        return name;
     }
 
+    public String getWorld() {
+        return world;
+    }
+
+    public ArrayList<Generator> getGenerators() {
+        return generators;
+    }
 }
