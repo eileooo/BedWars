@@ -3,6 +3,7 @@ package com.leo.bedwars;
 import com.leo.bedwars.arena.*;
 import com.leo.bedwars.arena.generator.Generator;
 import com.leo.bedwars.arena.generator.GeneratorType;
+import com.leo.bedwars.arena.setup.InventoryEvent;
 import com.leo.bedwars.arena.setup.SetupCommand;
 import com.leo.bedwars.arena.setup.SetupManager;
 import com.leo.bedwars.commands.TestCommand;
@@ -29,11 +30,12 @@ public final class BedWars extends JavaPlugin {
     @Override
     public void onEnable() {
         this.arenaManager = new ArenaManager(this);
-        this.setupManager = new SetupManager();
+        this.setupManager = new SetupManager(this);
         loadArenasConfig();
         loadArenas();
         getCommand("arenas").setExecutor(new TestCommand(arenaManager));
         getCommand("arena").setExecutor(new SetupCommand(setupManager));
+        Bukkit.getPluginManager().registerEvents(new InventoryEvent(setupManager), this);
     }
 
     void loadArenas() {
@@ -84,7 +86,11 @@ public final class BedWars extends JavaPlugin {
                 ConfigurationSection upgradesSection = islandsSection.getConfigurationSection(islandKey + ".upgrades");
                 GenericLocation upgrades = new GenericLocation().fromConfigurationSection(upgradesSection);
 
-                Island island = new Island(team, new Generator(GeneratorType.ISLAND, generator), bed, shop, upgrades);
+                Island island = new Island(team);
+                island.setGenerator(new Generator(GeneratorType.ISLAND, generator));
+                island.setBed(bed);
+                island.setShop(shop);
+                island.setUpgrades(upgrades);
                 arena.addIsland(island);
 
             }
@@ -119,4 +125,11 @@ public final class BedWars extends JavaPlugin {
 
     }
 
+    public File getArenaFile() {
+        return arenaFile;
+    }
+
+    public YamlConfiguration getArenaConfiguration() {
+        return arenaConfiguration;
+    }
 }

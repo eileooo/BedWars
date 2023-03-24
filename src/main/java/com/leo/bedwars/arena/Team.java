@@ -68,6 +68,10 @@ public enum Team {
         }
     }
 
+    public String getColoredTranslate() {
+        return getColor() + translate();
+    }
+
     public Material getBed() {
         switch (this) {
             case BLUE:
@@ -90,5 +94,29 @@ public enum Team {
 
         }
     }
+
+    public Material getWool() {
+        switch (this) {
+            case BLUE:
+                return Material.BLUE_WOOL;
+            case RED:
+                return Material.RED_WOOL;
+            case GREEN:
+                return Material.GREEN_WOOL;
+            case YELLOW:
+                return Material.YELLOW_WOOL;
+            case PURPLE:
+                return Material.PURPLE_WOOL;
+            case CYAN:
+                return Material.CYAN_WOOL;
+            case PINK:
+                return Material.PINK_WOOL;
+            default:
+                return Material.ORANGE_WOOL;
+
+
+        }
+    }
+
 
 }

@@ -12,10 +12,11 @@ public class Generator {
         this.location = location;
     }
 
-   /* public void generate() {
-        for (Material item : type.getMaterial()) {
-            location.getWorld().dropItemNaturally(location, new ItemStack(item));
-        }
-    } */
+    public GeneratorType getType() {
+        return type;
+    }
 
+    public GenericLocation getLocation() {
+        return location;
+    }
 }

@@ -1,7 +1,10 @@
 package com.leo.bedwars.arena;
 
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.yaml.snakeyaml.Yaml;
 
 public class GenericLocation {
 
@@ -74,6 +77,23 @@ public class GenericLocation {
         double pitch = section.getDouble("pitch");
 
         return this.setX(x).setY(y).setZ(z).setYaw(yaw).setPitch(pitch);
+    }
+
+    public GenericLocation fromBukkitLocation(Location location) {
+        this.x = location.getX();
+        this.y = location.getY();
+        this.z = location.getZ();
+        this.yaw = location.getYaw();
+        this.pitch = location.getPitch();
+        return this;
+    }
+
+    public void save(String key, YamlConfiguration configuration) {
+        configuration.set(key + ".x", this.x);
+        configuration.set(key + ".y", this.y);
+        configuration.set(key + ".z", this.z);
+        configuration.set(key + ".yaw", this.yaw);
+        configuration.set(key + ".pitch", this.pitch);
     }
 
 }
