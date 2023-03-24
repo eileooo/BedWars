@@ -71,12 +71,12 @@ public class SetupManager {
 
         Inventory inventory = player.getInventory();
         inventory.setItem(0, team);
-        inventory.setItem(1, emerald);
-        inventory.setItem(2, diamond);
-        inventory.setItem(3, iron);
-        inventory.setItem(4, bed);
-        inventory.setItem(5, shop);
-        inventory.setItem(6, upgrades);
+        inventory.setItem(5, emerald);
+        inventory.setItem(6, diamond);
+        inventory.setItem(1, iron);
+        inventory.setItem(2, bed);
+        inventory.setItem(3, shop);
+        inventory.setItem(4, upgrades);
         inventory.setItem(8, save);
     }
 
