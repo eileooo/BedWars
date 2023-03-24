@@ -1,6 +1,6 @@
 package com.leo.bedwars.arena.setup;
 
-import com.leo.bedwars.ItemBuilder;
+import com.leo.bedwars.misc.ItemBuilder;
 import com.leo.bedwars.arena.GenericLocation;
 import com.leo.bedwars.arena.Team;
 import com.leo.bedwars.arena.generator.Generator;
@@ -11,15 +11,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryInteractEvent;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.Random;
 
 public class InventoryEvent implements Listener {
 
@@ -98,6 +94,9 @@ public class InventoryEvent implements Listener {
 
             if (item == Material.LIME_STAINED_GLASS_PANE) {
                 manager.save(player);
+                player.sendMessage(ChatColor.GRAY + "Arena " + ChatColor.GREEN + arena.getName() + ChatColor.GRAY + " foi salva!");
+                manager.removeFromSetup(player);
+                player.playSound(location, Sound.ENTITY_PLAYER_LEVELUP, 20, 20);
             }
     }
 

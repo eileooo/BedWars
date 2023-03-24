@@ -1,8 +1,7 @@
 package com.leo.bedwars.arena.setup;
 
 import com.leo.bedwars.BedWars;
-import com.leo.bedwars.ItemBuilder;
-import com.leo.bedwars.arena.Arena;
+import com.leo.bedwars.misc.ItemBuilder;
 import com.leo.bedwars.arena.Island;
 import com.leo.bedwars.arena.Team;
 import com.leo.bedwars.arena.generator.Generator;
@@ -27,7 +26,7 @@ public class SetupManager {
         this.main = main;
     }
 
-    public void joinSetup(Player player, String name, String arenaWorld) {
+    public void addToSetup(Player player, String name, String arenaWorld) {
         player.sendMessage(ChatColor.GREEN + "Carregando mundo...");
 
         WorldCreator creator = new WorldCreator(arenaWorld);
@@ -41,11 +40,19 @@ public class SetupManager {
         world.setSpawnFlags(false, false);
 
         SetupArena arena = new SetupArena(name, arenaWorld);
+        arena.setPastLocation(player.getLocation());
+
         player.setGameMode(GameMode.CREATIVE);
         player.teleport(new Location(world, 0, 75, 0));
-
         setupCache.put(player, arena);
         setItems(player);
+    }
+
+    void removeFromSetup(Player player) {
+        Location location = getSetupArena(player).getPastLocation();
+        player.teleport(location);
+
+        setupCache.remove(player);
     }
 
     public SetupArena getSetupArena(Player player) {

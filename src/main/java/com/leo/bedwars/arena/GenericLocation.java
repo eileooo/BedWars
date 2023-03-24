@@ -79,6 +79,11 @@ public class GenericLocation {
         return this.setX(x).setY(y).setZ(z).setYaw(yaw).setPitch(pitch);
     }
 
+    public Location asBukkitLocation() {
+        return new Location(world, x, y, z, (float) yaw, (float) pitch);
+    }
+
+
     public GenericLocation fromBukkitLocation(Location location) {
         this.x = location.getX();
         this.y = location.getY();

@@ -7,42 +7,86 @@ import com.leo.bedwars.arena.setup.InventoryEvent;
 import com.leo.bedwars.arena.setup.SetupCommand;
 import com.leo.bedwars.arena.setup.SetupManager;
 import com.leo.bedwars.commands.TestCommand;
+import com.leo.bedwars.game.GameManager;
+import com.leo.bedwars.game.commands.AdminCommand;
+import com.leo.bedwars.game.commands.JoinCommand;
+import com.leo.bedwars.scoreboard.FastBoard;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.StringUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
-public final class BedWars extends JavaPlugin {
+public final class BedWars extends JavaPlugin implements Listener {
 
+    GameManager gameManager;
     ArenaManager arenaManager;
     SetupManager setupManager;
     File arenaFile;
     YamlConfiguration arenaConfiguration = new YamlConfiguration();
 
+    private final Map<UUID, FastBoard> boards = new HashMap<>();
 
     @Override
     public void onEnable() {
         this.arenaManager = new ArenaManager(this);
+        this.gameManager = new GameManager(this, arenaManager);
         this.setupManager = new SetupManager(this);
         loadArenasConfig();
         loadArenas();
         getCommand("arenas").setExecutor(new TestCommand(arenaManager));
         getCommand("arena").setExecutor(new SetupCommand(setupManager));
+        getCommand("join").setExecutor(new JoinCommand(gameManager));
+        getCommand("limparjogos").setExecutor(new AdminCommand(gameManager));
         Bukkit.getPluginManager().registerEvents(new InventoryEvent(setupManager), this);
+        getServer().getPluginManager().registerEvents(this, this);
+
+        getServer().getScheduler().runTaskTimer(this, () -> {
+            for (FastBoard board : this.boards.values()) {
+                updateBoard(board);
+            }
+        }, 0, 20);
+
+    }
+
+    @EventHandler
+    public void onJoin(PlayerJoinEvent e) {
+        Player player = e.getPlayer();
+
+        FastBoard board = new FastBoard(player);
+
+        board.updateTitle(ChatColor.RED + "DEBUG");
+
+        this.boards.put(player.getUniqueId(), board);
+    }
+
+    private void updateBoard(FastBoard board) {
+        board.updateLines(
+                "",
+                "Games: " + gameManager.getGames().size(),
+                ""
+        );
     }
 
     void loadArenas() {
+
         Set<String> arenas = arenaConfiguration.getKeys(false);
         for (String key : arenas) {
 
-            String world = arenaConfiguration.getString(key + ".map");
+            String world = arenaConfiguration.getString(key + ".world");
 
             Arena arena = new Arena(key, world);
 
@@ -102,7 +146,6 @@ public final class BedWars extends JavaPlugin {
 
             }
             arenaManager.cacheArena(arena);
-
         }
 
     }

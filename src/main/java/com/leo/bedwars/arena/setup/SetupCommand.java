@@ -6,8 +6,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Objects;
-
 public class SetupCommand implements CommandExecutor {
 
     SetupManager manager;
@@ -36,7 +34,7 @@ public class SetupCommand implements CommandExecutor {
 
         if (!args[0].equalsIgnoreCase("configurar")) return false; // more commands later
 
-        manager.joinSetup(player, args[1], args[2]);
+        manager.addToSetup(player, args[1], args[2]);
         return false;
     }
 }

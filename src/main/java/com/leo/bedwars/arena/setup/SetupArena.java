@@ -1,24 +1,13 @@
 package com.leo.bedwars.arena.setup;
 
-import com.leo.bedwars.ItemBuilder;
 import com.leo.bedwars.arena.GenericLocation;
 import com.leo.bedwars.arena.Island;
 import com.leo.bedwars.arena.Team;
 import com.leo.bedwars.arena.generator.Generator;
-import com.leo.bedwars.arena.generator.GeneratorType;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.Location;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.stream.Stream;
 
 public class SetupArena {
 
@@ -26,7 +15,8 @@ public class SetupArena {
     String world;
     HashMap<Team, Island> islands = new HashMap<>();
     ArrayList<Generator> generators = new ArrayList<>();
-    Team currentTeam = Team.RED;
+    Team currentTeam = Team.BLUE;
+    Location pastLocation;
 
     public SetupArena(String name, String world) {
         this.name = name;
@@ -44,6 +34,14 @@ public class SetupArena {
         return currentTeam;
     }
 
+
+    public Location getPastLocation() {
+        return pastLocation;
+    }
+
+    public void setPastLocation(Location pastLocation) {
+        this.pastLocation = pastLocation;
+    }
 
     public void addGenerator(Generator generator) {
         this.generators.add(generator);
