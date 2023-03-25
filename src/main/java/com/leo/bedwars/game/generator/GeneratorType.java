@@ -1,8 +1,7 @@
-package com.leo.bedwars.arena.generator;
+package com.leo.bedwars.game.generator;
 
 import org.bukkit.Material;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

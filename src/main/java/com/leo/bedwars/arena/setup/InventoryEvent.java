@@ -3,8 +3,8 @@ package com.leo.bedwars.arena.setup;
 import com.leo.bedwars.misc.ItemBuilder;
 import com.leo.bedwars.arena.GenericLocation;
 import com.leo.bedwars.arena.Team;
-import com.leo.bedwars.arena.generator.Generator;
-import com.leo.bedwars.arena.generator.GeneratorType;
+import com.leo.bedwars.game.generator.Generator;
+import com.leo.bedwars.game.generator.GeneratorType;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -56,47 +56,51 @@ public class InventoryEvent implements Listener {
             }
 
             if (item == Material.EMERALD) {
-                arena.addGenerator(new Generator(GeneratorType.EMERALD, genericLocation));
+                int i = arena.getGenerators().stream().filter(gen -> gen.getType() == GeneratorType.DIAMOND).toList().size();
+                arena.addGenerator(new Generator(GeneratorType.EMERALD, genericLocation, String.valueOf(i)));
                 player.sendMessage(ChatColor.GREEN + "Gerador de esmeralda adicionado!");
-                player.playSound(location, Sound.BLOCK_NOTE_BLOCK_PLING, 20, 20);
+                player.playSound(location, Sound.BLOCK_NOTE_BLOCK_PLING, 50, 50);
             }
 
             if (item == Material.DIAMOND) {
-                arena.addGenerator(new Generator(GeneratorType.DIAMOND, genericLocation));
+                int i = arena.getGenerators().stream().filter(gen -> gen.getType() == GeneratorType.EMERALD).toList().size();
+                arena.addGenerator(new Generator(GeneratorType.DIAMOND, genericLocation, String.valueOf(i)));
                 player.sendMessage(ChatColor.GREEN + "Gerador de diamante adicionado!");
-                player.playSound(location, Sound.BLOCK_NOTE_BLOCK_PLING, 20, 20);
+                player.playSound(location, Sound.BLOCK_NOTE_BLOCK_PLING, 50, 50);
             }
 
             if (item == Material.IRON_INGOT) {
-                arena.setGenerator(new Generator(GeneratorType.ISLAND, genericLocation));
+                arena.setGenerator(new Generator(GeneratorType.ISLAND, genericLocation, arena.currentTeam.toString()));
                 player.sendMessage(ChatColor.GREEN + "Gerador do time " + team.getColor() + "" + team.translate() + ChatColor.GREEN + " setado!");
-                player.playSound(location, Sound.BLOCK_NOTE_BLOCK_PLING, 20, 20);
+                player.playSound(location, Sound.BLOCK_NOTE_BLOCK_PLING, 50, 50);
             }
 
             if (item == team.getBed()) {
                 arena.setBed(genericLocation);
                 player.sendMessage(ChatColor.GREEN + "Cama do time " + team.getColor() + "" + team.translate() + ChatColor.GREEN + " setada!");
-                player.playSound(location, Sound.BLOCK_NOTE_BLOCK_PLING, 20, 20);
+                player.playSound(location, Sound.BLOCK_NOTE_BLOCK_PLING, 50, 50);
             }
 
             if (item == Material.SHEARS) {
-                Bukkit.getConsoleSender().sendMessage("a");
                 arena.setShop(genericLocation);
                 player.sendMessage(ChatColor.GREEN + "Aldeão comerciante do time " + team.getColor() + "" + team.translate() + ChatColor.GREEN + " setado!");
-                player.playSound(location, Sound.BLOCK_NOTE_BLOCK_PLING, 20, 20);
+                player.playSound(location, Sound.BLOCK_NOTE_BLOCK_PLING, 50, 50);
             }
 
             if (item == Material.TNT) {
                 arena.setUpgrades(genericLocation);
                 player.sendMessage(ChatColor.GREEN + "Aldeão de melhorias do time " + team.getColor() + "" + team.translate() + ChatColor.GREEN + " setado!");
-                player.playSound(location, Sound.BLOCK_NOTE_BLOCK_PLING, 20, 20);
+                player.playSound(location, Sound.BLOCK_NOTE_BLOCK_PLING, 50, 50);
+            }
+
+            if (item == Material.COMPASS) {
+                arena.setLobby(genericLocation);
+                player.sendMessage(ChatColor.GREEN + "Lobby setado!");
+                player.playSound(location, Sound.BLOCK_NOTE_BLOCK_PLING, 50, 50);
             }
 
             if (item == Material.LIME_STAINED_GLASS_PANE) {
                 manager.save(player);
-                player.sendMessage(ChatColor.GRAY + "Arena " + ChatColor.GREEN + arena.getName() + ChatColor.GRAY + " foi salva!");
-                manager.removeFromSetup(player);
-                player.playSound(location, Sound.ENTITY_PLAYER_LEVELUP, 20, 20);
             }
     }
 

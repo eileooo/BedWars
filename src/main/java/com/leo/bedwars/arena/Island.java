@@ -1,7 +1,6 @@
 package com.leo.bedwars.arena;
 
-import com.leo.bedwars.arena.generator.Generator;
-import org.bukkit.Location;
+import com.leo.bedwars.game.generator.Generator;
 
 public class Island {
 
@@ -53,6 +52,10 @@ public class Island {
 
     public void setUpgrades(GenericLocation upgrades) {
         this.upgrades = upgrades;
+    }
+
+    public boolean isAllSet() {
+        return (generator != null && bed != null && shop != null && upgrades != null);
     }
 
 

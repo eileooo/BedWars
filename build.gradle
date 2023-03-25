@@ -15,13 +15,13 @@ repositories {
         name = "sonatype"
         url = "https://oss.sonatype.org/content/groups/public/"
     }
+
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
     compileOnly "org.spigotmc:spigot-api:1.19.4-R0.1-SNAPSHOT"
-
-
-
+    compileOnly 'com.github.decentsoftware-eu:decentholograms:2.8.1'
 }
 
 def targetJavaVersion = 17

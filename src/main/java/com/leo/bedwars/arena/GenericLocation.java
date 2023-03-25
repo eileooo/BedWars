@@ -1,5 +1,6 @@
 package com.leo.bedwars.arena;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
@@ -69,12 +70,16 @@ public class GenericLocation {
         return this;
     }
 
-    public GenericLocation fromConfigurationSection(ConfigurationSection section) {
-        double x = section.getDouble("x");
-        double y = section.getDouble("y");
-        double z = section.getDouble("z");
-        double yaw = section.getDouble("yaw");
-        double pitch = section.getDouble("pitch");
+    public void printLocation() {
+        Bukkit.getConsoleSender().sendMessage(getX() + " " +getY() + " " + getZ());
+    }
+
+    public GenericLocation fromConfigurationSection(ConfigurationSection section, String path) {
+        double x = section.getDouble(path + ".x");
+        double y = section.getDouble(path + ".y");
+        double z = section.getDouble(path + ".z");
+        double yaw = section.getDouble(path + ".yaw");
+        double pitch = section.getDouble(path + "pitch");
 
         return this.setX(x).setY(y).setZ(z).setYaw(yaw).setPitch(pitch);
     }

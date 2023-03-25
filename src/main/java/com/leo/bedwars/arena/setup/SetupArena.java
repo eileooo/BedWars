@@ -3,7 +3,7 @@ package com.leo.bedwars.arena.setup;
 import com.leo.bedwars.arena.GenericLocation;
 import com.leo.bedwars.arena.Island;
 import com.leo.bedwars.arena.Team;
-import com.leo.bedwars.arena.generator.Generator;
+import com.leo.bedwars.game.generator.Generator;
 import org.bukkit.Location;
 
 import java.util.ArrayList;
@@ -17,6 +17,7 @@ public class SetupArena {
     ArrayList<Generator> generators = new ArrayList<>();
     Team currentTeam = Team.BLUE;
     Location pastLocation;
+    GenericLocation lobby;
 
     public SetupArena(String name, String world) {
         this.name = name;
@@ -28,6 +29,14 @@ public class SetupArena {
         for (Team team : Team.values()) {
             islands.put(team, new Island(team));
         }
+    }
+
+    public GenericLocation getLobby() {
+        return lobby;
+    }
+
+    public void setLobby(GenericLocation lobby) {
+        this.lobby = lobby;
     }
 
     public Team getCurrentTeam() {

@@ -1,8 +1,8 @@
 package com.leo.bedwars;
 
 import com.leo.bedwars.arena.*;
-import com.leo.bedwars.arena.generator.Generator;
-import com.leo.bedwars.arena.generator.GeneratorType;
+import com.leo.bedwars.game.generator.Generator;
+import com.leo.bedwars.game.generator.GeneratorType;
 import com.leo.bedwars.arena.setup.InventoryEvent;
 import com.leo.bedwars.arena.setup.SetupCommand;
 import com.leo.bedwars.arena.setup.SetupManager;
@@ -21,14 +21,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.util.StringUtil;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 public final class BedWars extends JavaPlugin implements Listener {
 
@@ -37,8 +33,6 @@ public final class BedWars extends JavaPlugin implements Listener {
     SetupManager setupManager;
     File arenaFile;
     YamlConfiguration arenaConfiguration = new YamlConfiguration();
-
-    private final Map<UUID, FastBoard> boards = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -55,8 +49,8 @@ public final class BedWars extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(this, this);
 
         getServer().getScheduler().runTaskTimer(this, () -> {
-            for (FastBoard board : this.boards.values()) {
-                updateBoard(board);
+            for (FastBoard board : setupManager.boards.values()) {
+                setupManager.updateBoard(board);
             }
         }, 0, 20);
 
@@ -66,46 +60,36 @@ public final class BedWars extends JavaPlugin implements Listener {
     public void onJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
 
-        FastBoard board = new FastBoard(player);
-
-        board.updateTitle(ChatColor.RED + "DEBUG");
-
-        this.boards.put(player.getUniqueId(), board);
     }
 
-    private void updateBoard(FastBoard board) {
-        board.updateLines(
-                "",
-                "Games: " + gameManager.getGames().size(),
-                ""
-        );
-    }
 
-    void loadArenas() {
+    public void loadArenas() {
 
         Set<String> arenas = arenaConfiguration.getKeys(false);
         for (String key : arenas) {
 
             String world = arenaConfiguration.getString(key + ".world");
+            GenericLocation lobby = new GenericLocation().fromConfigurationSection(arenaConfiguration.getConfigurationSection(key + ".lobby"), "");
 
             Arena arena = new Arena(key, world);
+            arena.setLobby(lobby);
 
             ConfigurationSection diamondGenerators = arenaConfiguration.getConfigurationSection(key + ".generators.diamond");
             ConfigurationSection emeraldGenerators = arenaConfiguration.getConfigurationSection(key + ".generators.emerald");
 
             assert diamondGenerators != null;
             for (String diamondGenerator : diamondGenerators.getKeys(false)) {
-                GenericLocation location = new GenericLocation().fromConfigurationSection(diamondGenerators);
-                Generator generator = new Generator(GeneratorType.DIAMOND, location);
-
+                GenericLocation location = new GenericLocation().fromConfigurationSection(diamondGenerators, diamondGenerator);
+                Generator generator = new Generator(GeneratorType.DIAMOND, location, diamondGenerator);
+                location.printLocation();
                 arena.addGenerator(generator);
             }
 
             assert emeraldGenerators != null;
             for (String emeraldGenerator : emeraldGenerators.getKeys(false)) {
-                GenericLocation location = new GenericLocation().fromConfigurationSection(emeraldGenerators);
-                Generator generator = new Generator(GeneratorType.EMERALD, location);
-
+                GenericLocation location = new GenericLocation().fromConfigurationSection(emeraldGenerators, emeraldGenerator);
+                Generator generator = new Generator(GeneratorType.EMERALD, location, emeraldGenerator);
+                location.printLocation();
                 arena.addGenerator(generator);
             }
 
@@ -123,22 +107,22 @@ public final class BedWars extends JavaPlugin implements Listener {
 
                 ConfigurationSection generatorSection = islandsSection.getConfigurationSection(islandKey + ".generator");
                 assert generatorSection != null;
-                GenericLocation generator = new GenericLocation().fromConfigurationSection(generatorSection);
+                GenericLocation generator = new GenericLocation().fromConfigurationSection(generatorSection, "");
 
                 ConfigurationSection bedSection = islandsSection.getConfigurationSection(islandKey + ".bed");
                 assert bedSection != null;
-                GenericLocation bed = new GenericLocation().fromConfigurationSection(bedSection);
+                GenericLocation bed = new GenericLocation().fromConfigurationSection(bedSection, "");
 
                 ConfigurationSection shopSection = islandsSection.getConfigurationSection(islandKey + ".shop");
                 assert shopSection != null;
-                GenericLocation shop = new GenericLocation().fromConfigurationSection(shopSection);
+                GenericLocation shop = new GenericLocation().fromConfigurationSection(shopSection, "");
 
                 ConfigurationSection upgradesSection = islandsSection.getConfigurationSection(islandKey + ".upgrades");
                 assert upgradesSection != null;
-                GenericLocation upgrades = new GenericLocation().fromConfigurationSection(upgradesSection);
+                GenericLocation upgrades = new GenericLocation().fromConfigurationSection(upgradesSection, "");
 
                 Island island = new Island(team);
-                island.setGenerator(new Generator(GeneratorType.ISLAND, generator));
+                island.setGenerator(new Generator(GeneratorType.ISLAND, generator, island.getTeam().toString()));
                 island.setBed(bed);
                 island.setShop(shop);
                 island.setUpgrades(upgrades);

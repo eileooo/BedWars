@@ -1,6 +1,6 @@
 package com.leo.bedwars.arena;
 
-import com.leo.bedwars.arena.generator.Generator;
+import com.leo.bedwars.game.generator.Generator;
 import org.bukkit.World;
 
 import java.util.ArrayList;
@@ -9,9 +9,11 @@ public class Arena {
 
     String name;
     String worldName;
+    GenericLocation lobby;
     World world;
     ArrayList<Island> islands = new ArrayList<>();
     ArrayList<Generator> generators = new ArrayList<>();
+
 
     public Arena(String name, String world) {
         this.name = name;
@@ -39,8 +41,22 @@ public class Arena {
         return worldName;
     }
 
+    public GenericLocation getLobby() {
+        return lobby;
+    }
+
+    public ArrayList<Generator> getGenerators() {
+        return generators;
+    }
+
+    public void setLobby(GenericLocation lobby) {
+        this.lobby = lobby;
+    }
+
     public void setWorld(World world) {
         this.world = world;
+
+        this.lobby.setWorld(world);
 
         for (Generator generator : generators) {
             generator.getLocation().setWorld(world);

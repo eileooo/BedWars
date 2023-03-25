@@ -2,6 +2,8 @@ name: BedWars
 version: '1.0 BETA'
 main: com.leo.bedwars.BedWars
 api-version: 1.19
+depend:
+  - DecentHolograms
 commands:
   arenas:
   arena:
