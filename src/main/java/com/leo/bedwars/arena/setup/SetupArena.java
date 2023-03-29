@@ -1,8 +1,8 @@
 package com.leo.bedwars.arena.setup;
 
 import com.leo.bedwars.arena.GenericLocation;
-import com.leo.bedwars.arena.Island;
-import com.leo.bedwars.arena.Team;
+import com.leo.bedwars.game.Island;
+import com.leo.bedwars.game.Team;
 import com.leo.bedwars.game.generator.Generator;
 import org.bukkit.Location;
 

@@ -1,6 +1,8 @@
 package com.leo.bedwars;
 
 import com.leo.bedwars.arena.*;
+import com.leo.bedwars.game.Island;
+import com.leo.bedwars.game.Team;
 import com.leo.bedwars.game.generator.Generator;
 import com.leo.bedwars.game.generator.GeneratorType;
 import com.leo.bedwars.arena.setup.InventoryEvent;
@@ -10,7 +12,6 @@ import com.leo.bedwars.commands.TestCommand;
 import com.leo.bedwars.game.GameManager;
 import com.leo.bedwars.game.commands.AdminCommand;
 import com.leo.bedwars.game.commands.JoinCommand;
-import com.leo.bedwars.scoreboard.FastBoard;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
@@ -39,21 +40,31 @@ public final class BedWars extends JavaPlugin implements Listener {
         this.arenaManager = new ArenaManager(this);
         this.gameManager = new GameManager(this, arenaManager);
         this.setupManager = new SetupManager(this);
+
         loadArenasConfig();
         loadArenas();
+
         getCommand("arenas").setExecutor(new TestCommand(arenaManager));
         getCommand("arena").setExecutor(new SetupCommand(setupManager));
         getCommand("join").setExecutor(new JoinCommand(gameManager));
         getCommand("limparjogos").setExecutor(new AdminCommand(gameManager));
+
         Bukkit.getPluginManager().registerEvents(new InventoryEvent(setupManager), this);
         getServer().getPluginManager().registerEvents(this, this);
 
         getServer().getScheduler().runTaskTimer(this, () -> {
-            for (FastBoard board : setupManager.boards.values()) {
-                setupManager.updateBoard(board);
-            }
+            setupManager.updateBoards();
+            gameManager.updateBoards();
+
         }, 0, 20);
 
+    }
+
+    @Override
+    public void onDisable() {
+        setupManager.unloadBoards();
+        gameManager.unloadBoards();
+        gameManager.unloadArenas();
     }
 
     @EventHandler
@@ -150,12 +161,6 @@ public final class BedWars extends JavaPlugin implements Listener {
         } catch (IOException | InvalidConfigurationException error) {
             error.printStackTrace();
         }
-
-    }
-
-
-    @Override
-    public void onDisable() {
 
     }
 

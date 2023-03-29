@@ -3,14 +3,13 @@ package com.leo.bedwars.game;
 import com.leo.bedwars.BedWars;
 import com.leo.bedwars.arena.Arena;
 import com.leo.bedwars.arena.ArenaManager;
+import com.leo.bedwars.game.tasks.StartingGameTask;
 import com.leo.bedwars.misc.Utils;
+import com.leo.bedwars.scoreboard.FastBoard;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
-import org.bukkit.util.FileUtil;
 
 import java.io.*;
-import java.nio.channels.FileChannel;
-import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -57,6 +56,8 @@ public class GameManager {
             Game game = optionalGame.get();
             player.sendMessage(ChatColor.AQUA + game.getId() + " está em modo de espera, entrando.");
             insertPlayer(player, game);
+            return;
+
         } else {
             if (arenaManager.arenaCache.size() == 0) {
                 player.sendMessage(ChatColor.RED + "Algo deu errado, nenhuma arena encontrada.");
@@ -89,22 +90,90 @@ public class GameManager {
             arena.setWorld(world);
             arenaManager.setupArena(arena);
 
-            player.sendMessage(ChatColor.GRAY + "Entrando em " + id + ".");
-
             Game game = new Game(id, arena);
 
             game.setState(GameState.WAITING);
             games.add(game);
-
-            player.teleport(arena.getLobby().asBukkitLocation());
+            insertPlayer(player, game);
         }
 
     }
 
     public void insertPlayer(Player player, Game game) {
+        game.players.put(player, game.getAvailableIsland());
+
+        FastBoard board = new FastBoard(player);
+        board.updateTitle(ChatColor.YELLOW + "" + ChatColor.BOLD + "BedWars");
+
+        game.boards.put(player, board);
+        player.sendMessage(ChatColor.GRAY + "Entrando em " + game.getId() + ".");
+        player.teleport(game.getArena().getLobby().asBukkitLocation());
+
+        if (game.players.size() == 2) {
+            setGameState(game, GameState.STARTING);
+        }
 
     }
 
+    public void setGameState(Game game, GameState state) {
+        game.setState(state);
+        switch (state) {
+            case STARTING -> {
+                game.broadcast(ChatColor.GREEN + "Iniciando em 10 segundos...");
+                StartingGameTask task = new StartingGameTask(this, game, 5);
+                task.runTaskTimer(main, 0, 20);
+                break;
+            }
+            case RUNNING -> {
+                for (Map.Entry<Player, Island> entry : game.players.entrySet()) {
+                    Player player = entry.getKey();
+                    Island island = entry.getValue();
+
+                    player.sendMessage(ChatColor.GRAY + "Você é o time " + island.getTeam().getColoredTranslate() + ChatColor.GRAY + ".");
+                    player.teleport(island.getGenerator().getLocation().asBukkitLocation());
+                    player.setPlayerListName(island.getTeam().getColor() + "" + ChatColor.BOLD + island.getTeam().toString().toUpperCase() + " " + ChatColor.RESET + island.getTeam().getColor() + player.getName());
+                }
+                break;
+            }
+            default -> {
+                game.broadcast("idk");
+                break;
+            }
+        }
+    }
+
+    public void updateBoards() {
+        for (Game game : games) {
+            for (FastBoard board : game.boards.values()) {
+                board.updateLines(
+                        ChatColor.DARK_GRAY + game.getId(),
+                        "",
+                        ChatColor.WHITE + "Jogadores: " + ChatColor.YELLOW + game.players.size() + ChatColor.WHITE + "/8",
+                        ""
+                );
+            }
+        }
+    }
+
+    public void unloadBoards() {
+        for (Game game : games) {
+            for (FastBoard board : game.boards.values()) {
+                board.delete();
+            }
+        }
+    }
+
+    public void unloadArenas() {
+        for (Game game : games) {
+            String worldName = game.getArena().getWorldName() + "_" + game.getId();
+            File arena = new File(worldName);
+
+            Bukkit.unloadWorld(worldName, false);
+            if (arena.delete()) {
+                Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + arena.getName() + " deletado.");
+            }
+        }
+    }
 
     public ArrayList<Game> getGames() {
         return games;

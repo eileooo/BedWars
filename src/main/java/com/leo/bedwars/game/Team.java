@@ -1,4 +1,4 @@
-package com.leo.bedwars.arena;
+package com.leo.bedwars.game;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

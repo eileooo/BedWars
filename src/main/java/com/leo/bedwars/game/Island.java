@@ -1,5 +1,6 @@
-package com.leo.bedwars.arena;
+package com.leo.bedwars.game;
 
+import com.leo.bedwars.arena.GenericLocation;
 import com.leo.bedwars.game.generator.Generator;
 
 public class Island {

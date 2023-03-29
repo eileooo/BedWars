@@ -1,6 +1,7 @@
 package com.leo.bedwars.arena;
 
 import com.leo.bedwars.BedWars;
+import com.leo.bedwars.game.Island;
 import com.leo.bedwars.game.generator.Generator;
 import com.leo.bedwars.game.generator.GeneratorType;
 import eu.decentsoftware.holograms.api.DHAPI;
@@ -62,6 +63,7 @@ public class ArenaManager {
 
     public void cacheArena(Arena arena) {
         this.arenaCache.add(arena);
+
         Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "Arena " + ChatColor.GREEN + arena.getName() + ChatColor.YELLOW + " foi cacheada.");
     }
 

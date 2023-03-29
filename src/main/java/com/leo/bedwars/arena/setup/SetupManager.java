@@ -3,8 +3,8 @@ package com.leo.bedwars.arena.setup;
 import com.leo.bedwars.BedWars;
 import com.leo.bedwars.arena.GenericLocation;
 import com.leo.bedwars.misc.ItemBuilder;
-import com.leo.bedwars.arena.Island;
-import com.leo.bedwars.arena.Team;
+import com.leo.bedwars.game.Island;
+import com.leo.bedwars.game.Team;
 import com.leo.bedwars.game.generator.Generator;
 import com.leo.bedwars.game.generator.GeneratorType;
 import com.leo.bedwars.scoreboard.FastBoard;
@@ -62,23 +62,34 @@ public class SetupManager {
         this.boards.put(player, board);
     }
 
-    public void updateBoard(FastBoard board) {
-        SetupArena arena = getSetupArena(board.getPlayer());
-        List<Generator> diamond = arena.getGenerators().stream().filter(gen -> gen.getType() == GeneratorType.DIAMOND).toList();
-        List<Generator> emerald = arena.getGenerators().stream().filter(gen -> gen.getType() == GeneratorType.EMERALD).toList();
+    public void updateBoards() {
 
-        ArrayList<String> lines = new ArrayList<>();
-        lines.add("");
-        lines.add((arena.getLobby() == null ? ChatColor.RED + "x " : ChatColor.GREEN + "✔ ") + "Lobby");
-        lines.add("");
-        lines.add(ChatColor.GRAY + "Geradores:");
-        lines.add(ChatColor.GRAY + "* " + (diamond.isEmpty() ? ChatColor.RED : ChatColor.GREEN) + "Diamante: " + ChatColor.GRAY + diamond.size());
-        lines.add(ChatColor.GRAY + "* " + (emerald.isEmpty() ? ChatColor.RED : ChatColor.GREEN) + "Esmeralda: " + ChatColor.GRAY + emerald.size());
-        lines.add("");
-        lines.add(ChatColor.GRAY + "Time: " + arena.getCurrentTeam().getColoredTranslate().toUpperCase());
-        lines.addAll(generateLoreForIsland(arena, arena.getCurrentTeam()));
+        for (FastBoard board : boards.values()) {
 
-        board.updateLines(lines);
+            SetupArena arena = getSetupArena(board.getPlayer());
+            List<Generator> diamond = arena.getGenerators().stream().filter(gen -> gen.getType() == GeneratorType.DIAMOND).toList();
+            List<Generator> emerald = arena.getGenerators().stream().filter(gen -> gen.getType() == GeneratorType.EMERALD).toList();
+
+            ArrayList<String> lines = new ArrayList<>();
+            lines.add("");
+            lines.add((arena.getLobby() == null ? ChatColor.RED + "x " : ChatColor.GREEN + "✔ ") + "Lobby");
+            lines.add("");
+            lines.add(ChatColor.GRAY + "Geradores:");
+            lines.add(ChatColor.GRAY + "* " + (diamond.isEmpty() ? ChatColor.RED : ChatColor.GREEN) + "Diamante: " + ChatColor.GRAY + diamond.size());
+            lines.add(ChatColor.GRAY + "* " + (emerald.isEmpty() ? ChatColor.RED : ChatColor.GREEN) + "Esmeralda: " + ChatColor.GRAY + emerald.size());
+            lines.add("");
+            lines.add(ChatColor.GRAY + "Time: " + arena.getCurrentTeam().getColoredTranslate().toUpperCase());
+            lines.addAll(generateLoreForIsland(arena, arena.getCurrentTeam()));
+
+            board.updateLines(lines);
+        }
+
+    }
+
+    public void unloadBoards() {
+        for (FastBoard board : boards.values()) {
+            board.delete();
+        }
     }
 
     void removeFromSetup(Player player) {

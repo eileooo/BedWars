@@ -1,5 +1,6 @@
 package com.leo.bedwars.arena;
 
+import com.leo.bedwars.game.Island;
 import com.leo.bedwars.game.generator.Generator;
 import org.bukkit.World;
 
@@ -66,6 +67,7 @@ public class Arena {
             island.getBed().setWorld(world);
             island.getShop().setWorld(world);
             island.getUpgrades().setWorld(world);
+            island.getGenerator().getLocation().setWorld(world);
         }
 
 
